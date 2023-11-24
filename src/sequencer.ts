@@ -40,6 +40,13 @@ export class Sequencer {
             const latestBlock = this.blockProducer.getLatestBlock();
             this.blockProducer.addTransactionReceipt(tx, latestBlock.hash, latestBlock.number);
 
+            console.log(`Transaction successful:`, {
+                hash: txHash,
+                from: tx.from,
+                to: tx.to,
+                value: tx.value.toString(),
+                nonce: tx.nonce
+            });
 
             return txHash;
         } catch (error) {
