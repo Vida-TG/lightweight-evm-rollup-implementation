@@ -27,6 +27,7 @@ async function testOperations() {
             value: ethers.parseEther("0.01")
         };
         const l2Tx = await wallet.sendTransaction(tx);
+        await l2Tx.wait();
         console.log('L2 transaction successful:', l2Tx.hash);
 
     } catch (error) {
