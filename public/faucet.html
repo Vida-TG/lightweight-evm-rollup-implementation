@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>L2 Testnet Faucet</title>
+</head>
+<body>
+    <h1>L2 Testnet Faucet</h1>
+    <div>
+        <input type="text" id="address" placeholder="Enter your address (0x...)" />
+        <button onclick="requestFunds()">Request Funds</button>
+        <button onclick="checkBalance()">Check Balance</button>
+    </div>
+    <div id="message"></div>
+
+    <script>
+        async function requestFunds() {
+            const address = document.getElementById('address').value;
+            const message = document.getElementById('message');
+            
+            try {
+                const response = await fetch('http://localhost:8546/faucet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    message.className = 'success';
+                    message.textContent = data.message;
+                } else {
+                    message.className = 'error';
+                    message.textContent = data.error;
+                }
+            } catch (error) {
+                message.className = 'error';
+                message.textContent = 'Request failed';
+            }
+        }
+
+        async function checkBalance() {
+            const address = document.getElementById('address').value;
+            const message = document.getElementById('message');
+            
+            try {
+                const response = await fetch(`http://localhost:8545`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        method: 'eth_getBalance',
+                        params: [address, 'latest'],
+                        id: 1
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.result) {
+                    const balance = BigInt(data.result);
+                    message.className = 'success';
+                    message.textContent = `Balance: ${formatEther(balance)} ETH`;
+                }
+            } catch (error) {
+                message.className = 'error';
+                message.textContent = 'Failed to check balance';
+            }
+        }
+    </script>
+</body>
+</html> 
