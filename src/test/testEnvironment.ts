@@ -4,6 +4,7 @@ import { Sequencer } from '../sequencer';
 import { StateManager } from '../state';
 import { BlockProducer } from '../blockProducer';
 import { OptimisticProver } from '../proofs/optimisticProver';
+import { FaucetServer } from '../faucet/faucetServer';
 import { CONFIG } from '../config';
 
 export class TestEnvironment {
@@ -13,6 +14,7 @@ export class TestEnvironment {
     private blockProducer: BlockProducer;
     private rpcServer: RPCServer;
     private prover: OptimisticProver;
+    private faucetServer: FaucetServer;
 
     constructor(config: any) {
         this.l1Provider = new ethers.JsonRpcProvider(config.L1_RPC_URL);
@@ -21,13 +23,15 @@ export class TestEnvironment {
         // Initialize block producer first
         this.blockProducer = new BlockProducer(this.stateManager, config.BLOCK_TIME);
         
+        // Initialize sequencer with block producer
         this.sequencer = new Sequencer(
             config.L1_RPC_URL,
             config.L1_BRIDGE_ADDRESS,
             config.SEQUENCER_PRIVATE_KEY,
-            this.blockProducer
+            this.blockProducer  // Pass block producer here
         );
         
+        // Initialize RPC server with block producer
         this.rpcServer = new RPCServer(
             config.L2_RPC_PORT,
             this.sequencer,
@@ -37,14 +41,20 @@ export class TestEnvironment {
         
         // Initialize other services
         this.prover = new OptimisticProver(this.stateManager, this.l1Provider);
+        this.faucetServer = new FaucetServer(config.FAUCET_PORT, this.stateManager);
     }
 
     async start() {
         console.log('Starting L2 testnet services...');
         
         try {
+            // Clear any existing state
             this.stateManager.clearState();
             
+            // Start block production
+            await this.blockProducer.start();
+            
+            // Print initial state
             this.stateManager.debugPrintState();
             
             console.log('\nNetwork Information:');
@@ -58,6 +68,10 @@ export class TestEnvironment {
             console.error('Failed to start L2 testnet:', error);
             throw error;
         }
+    }
+
+    private async deployContracts() {
+        // Deploy L1 bridge and other contracts if needed
     }
 
     private async startServices() {
