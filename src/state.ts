@@ -14,7 +14,6 @@ export class StateManager extends EventEmitter {
     private static instance: StateManager;
     private accounts: Map<string, AccountState> = new Map();
     private evmExecutor: EVMExecutor;
-    private pendingNonces: Map<string, number> = new Map();  // Track pending nonces
 
     private constructor() {
         super();
@@ -39,8 +38,6 @@ export class StateManager extends EventEmitter {
                 await this.evmExecutor.execute(tx);
             }
             
-            // Update nonce AFTER successful transaction
-            this.incrementNonce(tx.from);
             
             console.log(`Transaction applied successfully:`, {
                 from: tx.from,
@@ -151,7 +148,6 @@ export class StateManager extends EventEmitter {
 
     clearState() {
         this.accounts.clear();
-        this.pendingNonces.clear();  // Clear pending nonces too
         console.log('State cleared');
         this.emit('stateCleared');
         this.debugPrintState();
@@ -161,7 +157,6 @@ export class StateManager extends EventEmitter {
         const normalizedAddress = address.toLowerCase();
         const account = this.getAccount(normalizedAddress);
         const pendingNonce = this.pendingNonces.get(normalizedAddress) || account.nonce;
-        console.log(`Getting next nonce for ${normalizedAddress}: ${pendingNonce}`);
         return pendingNonce;
     }
 
