@@ -58,7 +58,7 @@
                 if (data.result) {
                     const balance = BigInt(data.result);
                     message.className = 'success';
-                    message.textContent = `Balance: ${formatEther(balance)} ETH`;
+                    message.textContent = `Balance: ${ethers.formatEther(balance)} ETH`;
                 }
             } catch (error) {
                 message.className = 'error';
