@@ -6,7 +6,7 @@ export const CONFIG = {
     NETWORK_NAME: 'L2 Testnet',
     
     // RPC Configuration
-    L1_RPC_URL: "https://sepolia.infura.io/v3/f462078bcbef4939b9d4662aac5d7892",
+    L1_RPC_URL: "",
     L2_RPC_PORT: 8545,
     
     // Contract Addresses
