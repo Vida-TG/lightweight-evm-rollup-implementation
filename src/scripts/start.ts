@@ -5,6 +5,7 @@ async function main() {
     const testnet = new TestEnvironment(CONFIG);
     await testnet.start();
     
+    // Keep the process running
     process.on('SIGINT', () => {
         console.log('Shutting down L2 testnet...');
         process.exit();

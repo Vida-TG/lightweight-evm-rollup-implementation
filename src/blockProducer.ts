@@ -98,6 +98,14 @@ export class BlockProducer extends EventEmitter {
         this.blocks.set(newBlock.hash, newBlock);
         this.currentBlock = newBlock;
 
+        // Update transaction receipts with block info
+        for (const tx of newBlock.transactions) {
+            const receipt = this.transactionReceipts.get(this.generateTransactionHash(tx));
+            if (receipt) {
+                receipt.blockHash = newBlock.hash;
+                receipt.blockNumber = newBlock.number;
+            }
+        }
 
         this.emit('newBlock', newBlock);
         console.log(`Produced block ${newBlock.number}, hash: ${newBlock.hash}`);

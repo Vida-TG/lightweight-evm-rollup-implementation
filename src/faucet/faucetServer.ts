@@ -30,6 +30,7 @@ export class FaucetServer {
                     return res.status(400).json({ error: 'Invalid address' });
                 }
 
+                // Check cooldown
                 const lastRequestTime = this.lastRequest.get(address) || 0;
                 const now = Date.now();
                 if (now - lastRequestTime < this.cooldownPeriod) {
@@ -43,8 +44,11 @@ export class FaucetServer {
                 const currentBalance = this.stateManager.getBalance(address);
                 console.log(`Current balance for ${address}: ${currentBalance.toString()}`);
 
+                // Send ETH
                 await this.stateManager.updateBalance(address, this.faucetAmount);
                 this.lastRequest.set(address, now);
+
+                // Get new balance to confirm
                 const newBalance = this.stateManager.getBalance(address);
                 console.log(`New balance for ${address}: ${newBalance.toString()}`);
 
