@@ -24,7 +24,7 @@ This is a minimalist EVM optimistic rollup implementation.
 
 ## Getting Started
 
-[Installation and usage instructions will go here]
+Just npm install it's not hard to figure out come on
 
 ## Once again, just for educational Purpose
 
@@ -35,4 +35,4 @@ This is a minimalist EVM optimistic rollup implementation.
 
 ## Contributing
 
-Feel free to pull, shit on it or something but I'm not working on it no more :):
+Feel free to pull, shit on it or something but I'm not working on it no more :)
